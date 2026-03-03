@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FoodPing System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>FoodPing</h2>
+
+    <label>Nama Makanan</label>
+    <input type="text" id="foodName">
+
+    <label>Tarikh Luput (DD/MM/YY)</label>
+    <input type="text" id="expiryDate" placeholder="05/03/26">
+
+    <button onclick="addFood()">Tambah</button>
+
+    <table id="foodTable">
+        <tr>
+            <th>Nama</th>
+            <th>Tarikh</th>
+            <th>Status</th>
+        </tr>
+    </table>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
