@@ -27,7 +27,7 @@ function showNotification(foodName, days, date) {
 
   navigator.serviceWorker.getRegistration().then(reg => {
     if (!reg) return;
-    reg.showNotification('FoodPing Alert!', {
+    reg.showNotification('FoodPing Reminder', {
       body: msg,
       icon: 'empty.png',
       badge: 'badge.png',
