@@ -1,4 +1,4 @@
-const CHECK_INTERVAL = 30 * 1000;
+const CHECK_INTERVAL = 15 * 1000;
 
 if ('Notification' in window && Notification.permission === 'default') {
   Notification.requestPermission();
@@ -55,14 +55,11 @@ function parseNotifTime(saved) {
 function isWithinNotifWindow() {
   if (localStorage.getItem('notifEnabled') === 'false') return false;
 
-  const saved      = localStorage.getItem('notifTime') || '8:00 AM';
-  const { h, m }   = parseNotifTime(saved);
-  const now        = new Date();
-  const nowMins    = now.getHours() * 60 + now.getMinutes();
-  const targetMins = h * 60 + m;
-  const diff       = nowMins - targetMins;
+  const saved    = localStorage.getItem('notifTime') || '8:00 AM';
+  const { h, m } = parseNotifTime(saved);
+  const now      = new Date();
 
-  return diff === 0;
+  return now.getHours() === h && now.getMinutes() === m;
 }
 
 function checkFoodExpiry() {
