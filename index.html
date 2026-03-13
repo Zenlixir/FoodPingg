@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FoodPing</title>
+  <meta name="theme-color" content="rgb(255, 182, 193)">
+  <meta name="apple-mobile-web-app-title" content="FoodPing">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@material/web/": "https://esm.run/@material/web/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import '@material/web/all.js';
+    import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
+</head>
+
+<body class="pallete">
+
+  <div class="pages-container">
+
+    <main class="page active" id="home">
+      <h1>FoodPing</h1>
+      <div class="big-thing">
+        <span class="material-symbols-outlined hmpglogo">fork_spoon</span>
+      </div>
+      <div class="card">
+        <label>Nama Makanan</label>
+        <input type="text" id="foodName">
+        <label>Tarikh Luput (DD/MM/YY)</label>
+        <input type="text" id="expiryDate" placeholder="05/03/26">
+        <button class="md-btn" onclick="addFood()">Tambah</button>
+      </div>
+    </main>
+
+    <main class="page" id="logs">
+      <h1>Food List</h1>
+      <div class="card">
+        <table id="foodTable">
+          <tr>
+            <th>Nama</th>
+            <th>Tarikh</th>
+            <th>Status</th>
+          </tr>
+        </table>
+      </div>
+      <ul id="foodList" class="md-list"></ul>
+    </main>
+
+    <main class="page" id="settings">
+      <h1>Settings</h1>
+
+      <div class="settings-group">
+        <div class="settings-group-label">GENERAL</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <span class="material-symbols-outlined settings-icon">vibration</span>
+            <span class="settings-row-label">Haptic Feedback</span>
+            <label class="ios-switch">
+              <input type="checkbox" id="hapticToggle">
+              <span class="ios-switch-track"></span>
+            </label>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row" onclick="confirmReset()">
+            <span class="material-symbols-outlined settings-icon">delete_forever</span>
+            <span class="settings-row-label settings-row-danger">Reset All Data</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-label">NOTIFICATIONS</div>
+        <div class="settings-card">
+          <div class="settings-row" id="notifTimeRow" onclick="openTimePicker()">
+            <span class="material-symbols-outlined settings-icon">notifications</span>
+            <span class="settings-row-label">Alert Time</span>
+            <span class="settings-row-value" id="notifTimeDisplay">8:00 AM</span>
+            <span class="material-symbols-outlined settings-chevron">chevron_right</span>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row">
+            <span class="material-symbols-outlined settings-icon">notifications_active</span>
+            <span class="settings-row-label">Notifications</span>
+            <label class="ios-switch">
+              <input type="checkbox" id="notifToggle">
+              <span class="ios-switch-track"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-label">ABOUT</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <span class="material-symbols-outlined settings-icon">fork_spoon</span>
+            <span class="settings-row-label">FoodPing</span>
+            <span class="settings-row-value">v1.0</span>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row">
+            <span class="material-symbols-outlined settings-icon">person</span>
+            <span class="settings-row-label">Developer</span>
+            <span class="settings-row-value">Izatifoodie</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <main class="page" id="about">
+      <h1>About</h1>
+      <div class="info">
+        <img src="icon.png" alt="Icon">
+        <div class="info-text">
+          <div>FoodPing</div>
+          <div class="creator">by Izatifoodie</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home">
+      <span class="material-symbols-outlined">home</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="logs">
+      <span class="material-symbols-outlined">list</span>
+      <span class="nav-label">Food List</span>
+    </button>
+    <button class="nav-item" data-page="settings">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="nav-label">Settings</span>
+    </button>
+    <button class="nav-item" data-page="about">
+      <span class="material-symbols-outlined">info</span>
+      <span class="nav-label">About</span>
+    </button>
+  </nav>
+
+  <script src="index.js"></script>
+  <script src="notifs.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(reg => reg.unregister());
+      }).then(() => {
+        navigator.serviceWorker.register('/FoodPingg/sw.js');
+      });
+    }
+  </script>
+
+</body>
+</html>
