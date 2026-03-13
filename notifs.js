@@ -60,15 +60,15 @@ function isWithinNotifWindow() {
   const now        = new Date();
   const nowMins    = now.getHours() * 60 + now.getMinutes();
   const targetMins = h * 60 + m;
+  const diff       = nowMins - targetMins;
 
-  return Math.abs(nowMins - targetMins) <= 1;
+  return diff === 0;
 }
 
 function checkFoodExpiry() {
   if (!isWithinNotifWindow()) return;
 
   const foods = JSON.parse(localStorage.getItem('foods')) || [];
-  const today = new Date().toDateString();
   const now   = new Date();
   now.setHours(0, 0, 0, 0);
 
