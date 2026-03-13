@@ -1,4 +1,4 @@
-const CHECK_INTERVAL = 60 * 1000;
+const CHECK_INTERVAL = 30 * 1000;
 
 if ('Notification' in window && Notification.permission === 'default') {
   Notification.requestPermission();
@@ -12,10 +12,13 @@ function parseDateNotif(dateStr) {
 }
 
 function showNotification(foodName, days, date) {
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return null;
 
-  const key = `notified_${foodName}_${date}`;
-  if (localStorage.getItem(key) === 'true') return;
+  const today     = new Date().toDateString();
+  const alertTime = localStorage.getItem('notifTime') || '8:00 AM';
+  const key       = `notified_${foodName}_${date}_${today}_${alertTime}`;
+
+  if (localStorage.getItem(key) === 'true') return null;
   localStorage.setItem(key, 'true');
 
   const msg = days === 0
@@ -29,33 +32,44 @@ function showNotification(foodName, days, date) {
       icon: 'icon.png',
       badge: 'icon.png',
       vibrate: [200, 100, 200],
-      tag: key,
-      renotify: false
+      tag: `foodping_${foodName}_${today}_${alertTime}`,
+      renotify: true
     });
   });
+
+  return foodName;
 }
 
-function isNotifTime() {
-  if (localStorage.getItem('notifEnabled') === 'false') return false;
-
-  const saved = localStorage.getItem('notifTime') || '8:00 AM';
-  const parts  = saved.split(/[: ]/);
-  let h = parseInt(parts[0]);
-  const m = parseInt(parts[1]);
-  const a = parts[2];
+function parseNotifTime(saved) {
+  const parts = saved.trim().split(/[\s:]+/);
+  let h       = parseInt(parts[0]);
+  const m     = parseInt(parts[1]);
+  const a     = (parts[2] || '').toUpperCase().trim();
 
   if (a === 'PM' && h !== 12) h += 12;
   if (a === 'AM' && h === 12) h = 0;
 
-  const now = new Date();
-  return now.getHours() === h && now.getMinutes() === m;
+  return { h, m };
+}
+
+function isWithinNotifWindow() {
+  if (localStorage.getItem('notifEnabled') === 'false') return false;
+
+  const saved      = localStorage.getItem('notifTime') || '8:00 AM';
+  const { h, m }   = parseNotifTime(saved);
+  const now        = new Date();
+  const nowMins    = now.getHours() * 60 + now.getMinutes();
+  const targetMins = h * 60 + m;
+
+  return Math.abs(nowMins - targetMins) <= 1;
 }
 
 function checkFoodExpiry() {
-  if (!isNotifTime()) return;
+  if (!isWithinNotifWindow()) return;
 
   const foods = JSON.parse(localStorage.getItem('foods')) || [];
-  const now = new Date();
+  const today = new Date().toDateString();
+  const now   = new Date();
   now.setHours(0, 0, 0, 0);
 
   foods.forEach(food => {
