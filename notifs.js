@@ -29,8 +29,8 @@ function showNotification(foodName, days, date) {
     if (!reg) return;
     reg.showNotification('FoodPing Alert!', {
       body: msg,
-      icon: 'icon.png',
-      badge: 'icon.png',
+      icon: 'empty.png',
+      badge: 'badge.png',
       vibrate: [200, 100, 200],
       tag: `foodping_${foodName}_${today}_${alertTime}`,
       renotify: true
