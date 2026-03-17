@@ -4,6 +4,16 @@ if ('Notification' in window && Notification.permission === 'default') {
   Notification.requestPermission();
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.ready.then(reg => {
+    if ('periodicSync' in reg) {
+      reg.periodicSync.register('check-expiry', {
+        minInterval: 60 * 60 * 1000
+      }).catch(() => {});
+    }
+  });
+}
+
 function parseDateNotif(dateStr) {
   const parts = dateStr.split('/');
   let year = parseInt(parts[2]);
