@@ -555,6 +555,7 @@ input:focus {
   border: none;
   background: none;
   cursor: pointer;
+  color: var(--md-sys-color-on-surface);;
 }
 
 #cloudUrlActions button:active, #wifiActions button:active {
