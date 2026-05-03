@@ -350,6 +350,33 @@ function renderTable() {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
+  const card = table.closest('.card');
+  let emptyMsg = document.getElementById('emptyMsg');
+
+  if (foods.length === 0) {
+    if (card) card.style.display = 'none';
+    if (!emptyMsg) {
+      emptyMsg = document.createElement('div');
+      emptyMsg.id = 'emptyMsg';
+      emptyMsg.textContent = 'Nothing here';
+      emptyMsg.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.4;
+        font-size: 16px;
+      `;
+      document.getElementById('logs').appendChild(emptyMsg);
+    }
+    emptyMsg.style.display = 'block';
+    return;
+  }
+
+  if (card) card.style.display = '';
+  if (emptyMsg) emptyMsg.style.display = 'none';
+
+
   foods.forEach((food, index) => {
     const diffDays = Math.ceil((parseDate(food.date) - now) / (1000 * 60 * 60 * 24));
 
@@ -514,12 +541,133 @@ function confirmResetLearning() {
   closeResetLearningModal();
 }
 
+// setup
+
+  function openWifiModal() {
+    document.getElementById("wifiModal").style.display = "flex";
+    const saved = JSON.parse(localStorage.getItem("pendingWifi") || "{}");
+    if (saved.ssid) document.getElementById("wifiSsid").value = saved.ssid;
+    if (saved.password) document.getElementById("wifiPass").value = saved.password;
+  }
+
+  function closeWifiModal() {
+    document.getElementById("wifiModal").style.display = "none";
+  }
+
+  function toggleWifiPass() {
+    const input = document.getElementById("wifiPass");
+    const icon = document.querySelector(".wifi-eye");
+    if (input.type === "password") {
+      input.type = "text";
+      icon.textContent = "visibility_off";
+    } else {
+      input.type = "password";
+      icon.textContent = "visibility";
+    }
+  }
+
+  function saveWifi() {
+    const ssid = document.getElementById("wifiSsid").value.trim();
+    const pass = document.getElementById("wifiPass").value;
+
+    if (!ssid) return;
+
+    localStorage.setItem("pendingWifi", JSON.stringify({ ssid, password: pass }));
+    document.getElementById("wifiStatus").textContent = "Waiting for ESP connection...";
+    closeWifiModal();
+    startWifiSync();
+  }
+
+  async function trySendWifi() {
+  const pending = JSON.parse(localStorage.getItem("pendingWifi") || "{}");
+  if (!pending.ssid) return;
+
+  const cloudId = localStorage.getItem("cloud_id") || "";
+
+  if (!cloudId) {
+    try {
+      const test = await fetch("http://192.168.4.1/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ssid: pending.ssid, password: pending.password, script_id: "" }) });
+      document.getElementById("wifiStatus").textContent = "Cloud ID not set, configure in settings first";
+    } catch (e) {
+      document.getElementById("wifiStatus").textContent = "Waiting for ESP connection...";
+    }
+    return;
+  }
+
+  try {
+    const res = await fetch("http://192.168.4.1/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ssid: pending.ssid,
+        password: pending.password,
+        script_id: cloudId
+      })
+    });
+
+    if (res.ok) {
+      localStorage.removeItem("pendingWifi");
+      document.getElementById("wifiStatus").textContent = "Configured";
+      stopWifiSync();
+    }
+  } catch (e) {}
+}
+
+  let wifiSyncInterval = null;
+
+  function startWifiSync() {
+    if (wifiSyncInterval) return;
+    wifiSyncInterval = setInterval(trySendWifi, 3000);
+  }
+
+  function stopWifiSync() {
+    clearInterval(wifiSyncInterval);
+    wifiSyncInterval = null;
+  }
+
+  async function resetWifi() {
+    openAlert({
+      title: 'Reset WiFi',
+      msg: 'This will clear WiFi credentials. ESP will restart as a hotspot. Continue?',
+      buttons: [
+        { label: 'Cancel', subtle: true },
+        {
+          label: 'Reset',
+          bold: true,
+          danger: true,
+          action: async () => {
+            closeWifiModal();
+            localStorage.removeItem("pendingWifi");
+            document.getElementById("wifiStatus").textContent = "Not Configured";
+            stopWifiSync();
+            try {
+              await fetch("http://esp32.local/reset-wifi", { method: "POST" });
+            } catch (e) {}
+            setTimeout(() => {
+              openAlert({
+                title: 'WiFi Reset',
+                msg: "Connect to 'FoodPing-Setup' hotspot, then reopen this app to reconfigure.",
+                buttons: [{ label: 'OK' }]
+              });
+            }, 300);
+          }
+        }
+      ]
+    });
+  }
+
+  if (localStorage.getItem("pendingWifi")) {
+    document.getElementById("wifiStatus").textContent = "Waiting for ESP connection...";
+    startWifiSync();
+  }
+
 // cloud
 
 function openCloudIdModal() {
   vibrate(32);
   document.getElementById('cloudIdModal').style.display = 'flex';
   document.getElementById('cloudIdInput').value = localStorage.getItem('cloud_id') || '';
+  document.getElementById('cloudUsrInput').value = localStorage.getItem('cloud_user') || '';
 }
 
 function closeCloudIdModal() {
@@ -529,7 +677,9 @@ function closeCloudIdModal() {
 
 function saveCloudId() {
   vibrate(48);
+  const usr = document.getElementById('cloudUsrInput').value.trim();
   const val = document.getElementById('cloudIdInput').value.trim();
+  localStorage.setItem('cloud_user', usr);
   localStorage.setItem('cloud_id', val);
   document.getElementById('cloudIdDisplay').textContent = val ? 'Set' : 'Not set';
   closeCloudIdModal();
@@ -653,4 +803,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('notifTimeDisplay').textContent = localStorage.getItem('notifTime') || '8:00 AM';
+  const cloudId = localStorage.getItem('cloud_id') || '';
+document.getElementById('cloudIdDisplay').textContent = cloudId ? 'Set' : 'Not set';
 });
