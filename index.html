@@ -100,7 +100,6 @@
                      </tr>
                   </table>
                </div>
-               <ul id="foodList" class="md-list"></ul>
             </div>
          </main>
          <main class="page" id="settings">
@@ -116,6 +115,13 @@
                         <input type="checkbox" id="hapticToggle">
                         <span class="switch-track"></span>
                         </label>
+                     </div>
+                     <div class="settings-divider"></div>
+                     <div class="settings-row" onclick="openWifiModal()">
+                        <span class="material-symbols-outlined settings-icon">wifi</span>
+                        <span class="settings-row-label">Device Wi-Fi Setup</span>
+                        <span class="settings-row-value" id="wifiStatus">Not configured</span>
+                        <span class="material-symbols-outlined settings-chevron">chevron_right</span>
                      </div>
                      <div class="settings-divider"></div>
                      <div class="settings-row" onclick="openCloudIdModal()">
@@ -175,7 +181,7 @@
                      <div class="settings-row">
                         <span class="material-symbols-outlined settings-icon">fork_spoon</span>
                         <span class="settings-row-label">FoodPing</span>
-                        <span class="settings-row-value">v1.2</span>
+                        <span class="settings-row-value">v1.2 (120)</span>
                      </div>
                      <div class="settings-divider"></div>
                      <div class="settings-row">
@@ -265,14 +271,37 @@
             <div id="cloudIdTitle">Cloud Sync</div>
             <div id="cloudIdContent">
                <label for="cloudUsrInput">Username</label>
-               <input id="cloudUsrInput">
+               <input id="cloudUsrInput" placeholder="Anything">
                <label for="cloudIdInput">Cloud Sync ID</label>
-               <input id="cloudIdInput">
+               <input id="cloudIdInput" placeholder="Sheets development ID">
             </div>
             <div id="cloudUrlDivider"></div>
             <div id="cloudUrlActions">
                <button id="cloudUrlCancelBtn" onclick="closeCloudIdModal()">Cancel</button>
                <button id="cloudUrlSaveBtn" onclick="saveCloudId()">Save</button>
+            </div>
+         </div>
+      </div>
+      <div id="wifiModal" style="display:none;">
+         <div id="wifiBackdrop"></div>
+         <div id="wifiBox">
+            <div id="wifiTitle">Device Wi-Fi Setup</div>
+            <div id="wifiContent">
+               <label for="wifiSsid">WiFi Name</label>
+               <input id="wifiSsid" placeholder="SSID">
+               <label for="wifiPass">WiFi Password</label>
+               <div class="wifi-pass-wrap">
+                  <input id="wifiPass" type="password" placeholder="Password">
+                  <span class="material-symbols-outlined wifi-eye" onclick="toggleWifiPass()">
+                  visibility
+                  </span>
+               </div>
+               <button class="md-btn" onclick="resetWifi()">Reset WiFi</button>
+            </div>
+            <div id="wifiDivider"></div>
+            <div id="wifiActions">
+               <button onclick="closeWifiModal()">Cancel</button>
+               <button onclick="saveWifi()">Save</button>
             </div>
          </div>
       </div>
