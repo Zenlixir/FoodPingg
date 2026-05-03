@@ -132,7 +132,7 @@ input:focus {
   border-bottom: 1px solid var(--md-sys-color-outline);
 }
 
-#foodTable td { padding: 1rem; text-align: center; }
+#foodTable td { padding: 1.2rem 0.8rem; text-align: center; }
 #foodTable tr.data-row td { border-bottom: none; }
 #foodTable tr.btn-row td {
   padding: 0.25rem 0.5rem 0.5rem;
@@ -157,8 +157,6 @@ input:focus {
 }
 
 .md-btn:active { transform: scale(0.98); }
-
-.md-list { list-style: none; padding: 0; margin: 0; }
 
 .md-switch {
   display: inline-flex;
@@ -426,7 +424,7 @@ input:focus {
 .switch input:checked + .switch-track { background: var(--md-sys-color-primary); }
 .switch input:checked + .switch-track::before { transform: translateX(1.25rem); }
 
-#customAlert, #resetLearningModal, #cloudIdModal {
+#customAlert, #resetLearningModal, #cloudIdModal, #wifiModal {
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -435,9 +433,9 @@ input:focus {
   justify-content: center;
 }
 
-#cloudIdModal { display: none; }
+#cloudIdModal, #wifiModal { display: none; }
 
-#customAlertBackdrop, #resetLearningBackdrop, #cloudIdBackdrop, #timePickerBackdrop, #datePickerBackdrop {
+#customAlertBackdrop, #resetLearningBackdrop, #cloudIdBackdrop, #timePickerBackdrop, #datePickerBackdrop, #wifiBackdrop {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.08);
@@ -471,7 +469,7 @@ input:focus {
   opacity: 0.85;
 }
 
-#customAlertDivider, #cloudUrlDivider {
+#customAlertDivider, #cloudUrlDivider, #wifiDivider {
   height: 0.5px;
   background: var(--md-sys-color-outline);
 }
@@ -510,7 +508,7 @@ input:focus {
   background: var(--md-sys-color-outline);
 }
 
-#cloudIdBox {
+#cloudIdBox, #wifiBox {
   position: relative;
   width: min(16.875rem, 90vw);
   background: var(--md-sys-color-surface-container);
@@ -520,7 +518,7 @@ input:focus {
   animation: alertPopIn 0.3s ease;
 }
 
-#cloudIdTitle {
+#cloudIdTitle, #wifiTitle{
   font-size: 1.0625rem;
   font-weight: 600;
   padding: 1.25rem 1rem 0.25rem;
@@ -528,9 +526,16 @@ input:focus {
   text-align: center;
 }
 
-#cloudIdContent { padding: 1rem 1.5rem 1.5rem; }
+#cloudIdContent,#wifiContent {
+  padding: 1rem 1.5rem 1.5rem;
+}
 
-#cloudIdInput, #cloudUsrInput {
+#cloudIdContent label, #wifiContent label {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+#cloudIdInput, #cloudUsrInput, #wifiContent input {
   width: 100%;
   padding: 0.5rem 0;
   border-radius: 0;
@@ -542,14 +547,18 @@ input:focus {
   margin-bottom: 1rem;
 }
 
-#cloudUrlActions { display: flex; }
+#cloudUrlActions, #wifiActions { display: flex; }
 
-#cloudUrlActions button {
+#cloudUrlActions button, #wifiActions button {
   flex: 1;
   padding: 0.75rem;
   border: none;
   background: none;
   cursor: pointer;
+}
+
+#cloudUrlActions button:active, #wifiActions button:active {
+  background: var(--md-sys-color-primary-container);
 }
 
 #timePicker, #datePicker {
@@ -766,4 +775,28 @@ i.fa-solid {
 @keyframes floatIcon {
   0%, 100% { transform: translateY(0px) rotate(var(--r)); }
   50%       { transform: translateY(-0.5rem) rotate(var(--r)); }
+}
+
+.wifi-pass-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.wifi-pass-wrap input {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.wifi-eye {
+  position: absolute;
+  right: 0.25rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.wifi-eye:active {
+  opacity: 1;
 }
