@@ -859,7 +859,7 @@ i.fa-solid {
 .theme-option {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 1rem;
   padding: 0.875rem 1rem;
   cursor: pointer;
   background: var(--md-sys-color-surface);
@@ -892,11 +892,10 @@ i.fa-solid {
 }
 
 .theme-swatch {
+  font-size: 1.5rem;
   width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 50%;
+  text-align: center;
   flex-shrink: 0;
-  border: 2px solid var(--md-sys-color-outline);
 }
 
 .theme-name {
