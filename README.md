@@ -6,13 +6,13 @@
 
 <h1>Screenshots</h1>
 
-<img src="/Screenshots/1.png" width="30%" />
-<img src="/Screenshots/2.png" width="30%" />
-<img src="/Screenshots/3.png" width="30%" />
+<img src="/Screenshots/35798.png" width="30%" />
+<img src="/Screenshots/35799.png" width="30%" />
+<img src="/Screenshots/35800.png" width="30%" />
 
-<img src="/Screenshots/4.png" width="30%" />
-<img src="/Screenshots/5.png" width="30%" />
-<img src="/Screenshots/6.png" width="30%" />
+<img src="/Screenshots/35801.png" width="30%" />
+<img src="/Screenshots/35802.png" width="30%" />
+<img src="/Screenshots/35803.png" width="30%" />
 </div>
 
 <div align="center">
@@ -48,6 +48,8 @@
 <strong>Made with ♥︎ by Zenlixir</strong><br/>
 <sub>Forked from FoodPing by Izatifoodie</sub>
 </div>
+
+<br>
 
 <div align="center">
   <a href="DISCORD_INVITE"><img src="https://img.shields.io/badge/Discord-5A5A5A?style=for-the-badge&logo=discord&logoColor=white"/></a>
