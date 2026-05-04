@@ -746,6 +746,45 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// greetings
+
+function greetUser() {
+  const username = localStorage.getItem('cloud_user');
+
+  const h1 = document.querySelector('#home h1');
+  if (!h1) return;
+
+  const hour = new Date().getHours();
+  let greeting;
+  if (hour < 12) greeting = 'Good Morning';
+  else if (hour < 17) greeting = 'Good Afternoon';
+  else if (hour < 21) greeting = 'Good Evening';
+  else greeting = 'Good Night';
+
+  const greetText = username ? `${greeting}, ${username}!` : `${greeting}!`;
+
+  setTimeout(() => {
+    h1.style.transition = 'opacity 0.5s ease';
+    h1.style.opacity = '0';
+
+    setTimeout(() => {
+      h1.textContent = greetText;
+      h1.style.opacity = '1';
+
+      setTimeout(() => {
+        h1.style.opacity = '0';
+
+        setTimeout(() => {
+          h1.textContent = 'FoodPing';
+          h1.style.opacity = '1';
+        }, 500);
+
+      }, 2000);
+    }, 500);
+
+  }, 2000);
+}
+
 // init
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -806,3 +845,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const cloudId = localStorage.getItem('cloud_id') || '';
 document.getElementById('cloudIdDisplay').textContent = cloudId ? 'Set' : 'Not set';
 });
+
+greetUser();
