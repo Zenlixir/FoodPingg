@@ -386,19 +386,25 @@ function renderTable() {
     dataRow.insertCell(1).textContent = food.date;
 
     const statusCell = dataRow.insertCell(2);
-    if (diffDays > 3) {
-      statusCell.textContent = `🟢 ${diffDays} days remaining`;
-      statusCell.style.color = 'green';
-    } else if (diffDays > 0) {
-      statusCell.textContent = `🟡 ${diffDays} days remaining`;
-      statusCell.style.color = 'orange';
-    } else if (diffDays === 0) {
-      statusCell.textContent = '🔴 Expired Today';
-      statusCell.style.color = 'red';
-    } else {
-      statusCell.textContent = '🔴 Expired';
-      statusCell.style.color = 'red';
-    }
+statusCell.style.cssText = 'display: flex; align-items: center; gap: 0.4rem; justify-content: flex-end;';
+
+if (diffDays > 3) {
+  statusCell.innerHTML = `
+    <span style="color: #7bc99a; text-align: right;">${diffDays} days remaining</span>
+    <i class="fa-solid fa-circle-check" style="color: #7bc99a; flex-shrink: 0;"></i>`;
+} else if (diffDays > 0) {
+  statusCell.innerHTML = `
+    <span style="color: #f0b97a; text-align: right;">${diffDays} days remaining</span>
+    <i class="fa-solid fa-circle-exclamation" style="color: #f0b97a; flex-shrink: 0;"></i>`;
+} else if (diffDays === 0) {
+  statusCell.innerHTML = `
+    <span style="color: #f28b8b; text-align: right;">Expired Today</span>
+    <i class="fa-solid fa-circle-xmark" style="color: #f28b8b; flex-shrink: 0;"></i>`;
+} else {
+  statusCell.innerHTML = `
+    <span style="color: #f28b8b; text-align: right;">Expired</span>
+    <i class="fa-solid fa-circle-xmark" style="color: #f28b8b; flex-shrink: 0;"></i>`;
+}
 
     const btnRow = table.insertRow();
     btnRow.className = 'btn-row';
@@ -875,24 +881,24 @@ const themes = {
   },
 
   void: {
-    name: 'The Void',
-    '--md-sys-color-primary':              'rgb(200, 200, 200)',
-    '--md-sys-color-on-primary':           'rgb(0, 0, 0)',
-    '--md-sys-color-primary-container':    'rgb(60, 60, 60)',
-    '--md-sys-color-on-primary-container': 'rgb(240, 240, 240)',
-    '--md-sys-color-background':           'rgb(18, 18, 18)',
-    '--md-sys-color-on-background':        'rgb(230, 230, 230)',
-    '--md-sys-color-surface':              'rgb(18, 18, 18)',
-    '--md-sys-color-on-surface':           'rgb(230, 230, 230)',
-    '--md-sys-color-outline':              'rgb(90, 90, 90)',
-    '--md-sys-color-surface-container':    'rgb(32, 32, 32)',
-    '--md-sys-color-scrim':                'rgba(0, 0, 0, 0.08)',
-    '--md-sys-shadow-settings-icon':       '0 2px 6px rgba(0, 0, 0, 0.5)',
-    '--md-sys-shadow-switch-thumb':        '0 2px 4px rgba(0, 0, 0, 0.4)',
-    '--md-sys-shadow-modal':               '0 8px 32px rgba(0, 0, 0, 0.5)',
-    '--md-sys-color-input-border':     'rgba(90, 90, 90, 0.8)',
-    '--md-sys-color-input-background': 'rgb(25, 25, 25)',
-    '--md-sys-shadow-home-card':       '0 0 0 2px rgba(200, 200, 200, 0.08)',
+  name: 'The Void',
+  '--md-sys-color-primary':              'rgb(170, 170, 170)',
+  '--md-sys-color-on-primary':           'rgb(10, 10, 10)',
+  '--md-sys-color-primary-container':    'rgb(50, 50, 50)',
+  '--md-sys-color-on-primary-container': 'rgb(210, 210, 210)',
+  '--md-sys-color-background':           'rgb(18, 18, 18)',
+  '--md-sys-color-on-background':        'rgb(195, 195, 195)',
+  '--md-sys-color-surface':              'rgb(18, 18, 18)',
+  '--md-sys-color-on-surface':           'rgb(195, 195, 195)',
+  '--md-sys-color-outline':              'rgb(80, 80, 80)',
+  '--md-sys-color-surface-container':    'rgb(28, 28, 28)',
+  '--md-sys-color-scrim':                'rgba(0, 0, 0, 0.08)',
+  '--md-sys-shadow-settings-icon':       '0 2px 6px rgba(0, 0, 0, 0.5)',
+  '--md-sys-shadow-switch-thumb':        '0 2px 4px rgba(0, 0, 0, 0.4)',
+  '--md-sys-shadow-modal':               '0 8px 32px rgba(0, 0, 0, 0.5)',
+  '--md-sys-color-input-border':         'rgba(80, 80, 80, 0.8)',
+  '--md-sys-color-input-background':     'rgb(22, 22, 22)',
+  '--md-sys-shadow-home-card':           '0 0 0 2px rgba(170, 170, 170, 0.07)',
   }
 };
 
