@@ -97,6 +97,10 @@ function vibrate(ms) {
   haptic(ms);
 }
 
+document.querySelectorAll('#cloudUrlActions button, #wifiActions button, #themeActions button, #fontActions button, #creditsActions button').forEach(btn => {
+  btn.addEventListener('click', () => haptic(32));
+});
+
 // alert
 
 function closeAlert() {
@@ -1078,6 +1082,159 @@ function closeThemeModal() {
   }, 200);
 }
 
+// fonts
+
+const FONT_SOURCES = {
+  default: null,
+  patrickhand: 'https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap',
+  gaegu: 'https://fonts.googleapis.com/css2?family=Gaegu&display=swap',
+  monocraft: null,
+  jetbrains: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap',
+};
+
+const FONT_FAMILY = {
+  default: '"Google Sans Flex", system-ui, sans-serif',
+  patrickhand: '"Patrick Hand", cursive',
+  gaegu: '"Gaegu", cursive',
+  monocraft: '"Monocraft", monospace',
+  jetbrains: '"JetBrains Mono", monospace',
+};
+
+const loadedFonts = new Set(['default']);
+let allFontsLoaded = false;
+
+function loadFont(fontKey) {
+  if (loadedFonts.has(fontKey)) return Promise.resolve();
+  loadedFonts.add(fontKey);
+
+  return new Promise((resolve) => {
+    if (fontKey === 'monocraft') {
+      const style = document.createElement('style');
+      style.textContent = `@font-face {
+        font-family: 'Monocraft';
+        src: url('https://cdn.jsdelivr.net/gh/IdreesInc/Monocraft@main/dist/Monocraft-ttf/Monocraft.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }`;
+      document.head.appendChild(style);
+      setTimeout(resolve, 100);
+    } else if (FONT_SOURCES[fontKey]) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = FONT_SOURCES[fontKey];
+      link.onload = resolve;
+      link.onerror = resolve;
+      document.head.appendChild(link);
+    } else {
+      resolve();
+    }
+  });
+}
+
+function loadAllFonts() {
+  if (allFontsLoaded) return Promise.resolve();
+  const keys = Object.keys(FONT_SOURCES).filter(k => k !== 'default');
+  return Promise.all(keys.map(loadFont)).then(() => {
+    allFontsLoaded = true;
+  });
+}
+
+function setFontStyle(family) {
+  const styleId = 'font-override-style';
+  let styleEl = document.getElementById(styleId);
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = styleId;
+    document.head.appendChild(styleEl);
+  }
+
+  styleEl.textContent = `
+    * { font-family: ${family} !important; }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; }
+    .material-icons { font-family: 'Material Icons' !important; }
+    .material-icons-round { font-family: 'Material Icons Round' !important; }
+    .fa, .fa-solid, .fa-regular, .fa-brands { font-family: 'Font Awesome 7 Free', 'Font Awesome 7 Brands' !important; }
+    #font-default .font-preview, #font-default .font-name { font-family: "Google Sans Flex", system-ui, sans-serif !important; }
+    #font-patrickhand .font-preview, #font-patrickhand .font-name { font-family: "Patrick Hand", cursive !important; }
+    #font-gaegu .font-preview, #font-gaegu .font-name { font-family: "Gaegu", cursive !important; }
+    #font-monocraft .font-preview, #font-monocraft .font-name { font-family: "Monocraft", monospace !important; }
+    #font-jetbrains .font-preview, #font-jetbrains .font-name { font-family: "JetBrains Mono", monospace !important; }
+  `;
+}
+
+function applyFont(fontKey) {
+  const family = FONT_FAMILY[fontKey];
+
+  loadFont(fontKey).then(() => {
+    setFontStyle(family);
+  });
+
+  localStorage.setItem('selectedFont', fontKey);
+
+  document.querySelectorAll('.font-check').forEach(el => el.classList.remove('visible'));
+  const check = document.getElementById(`check-font-${fontKey}`);
+  if (check) check.classList.add('visible');
+
+  const display = document.getElementById('fontDisplay');
+  if (display) display.textContent = document.querySelector(`#font-${fontKey} .font-name`)?.textContent || 'Default';
+}
+
+async function openFontModal() {
+  const modal = document.getElementById('fontModal');
+  const list = document.getElementById('fontList');
+
+  modal.style.display = 'flex';
+
+  if (!allFontsLoaded) {
+    list.style.opacity = '0.4';
+    list.style.pointerEvents = 'none';
+    list.style.transition = 'opacity 0.3s ease';
+
+    const spinner = document.createElement('div');
+    spinner.id = 'fontLoadingSpinner';
+    spinner.style.cssText = `
+      position: absolute;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: var(--md-sys-color-on-surface);
+      opacity: 0.5;
+      font-family: "Google Sans Flex", sans-serif !important;
+      white-space: nowrap;
+    `;
+    spinner.textContent = 'Loading fonts...';
+    document.getElementById('fontBox').appendChild(spinner);
+
+    await loadAllFonts();
+
+    list.style.opacity = '1';
+    list.style.pointerEvents = '';
+    spinner.remove();
+  }
+}
+
+function closeFontModal() {
+  document.getElementById('fontModal').style.display = 'none';
+}
+
+function initFont() {
+  const saved = localStorage.getItem('selectedFont') || 'default';
+
+  loadFont(saved).then(() => {
+    setFontStyle(FONT_FAMILY[saved]);
+  });
+
+  document.querySelectorAll('.font-check').forEach(el => el.classList.remove('visible'));
+  const check = document.getElementById(`check-font-${saved}`);
+  if (check) check.classList.add('visible');
+
+  const display = document.getElementById('fontDisplay');
+  if (display) display.textContent = document.querySelector(`#font-${saved} .font-name`)?.textContent || 'Default';
+}
+
+initFont();
+
 // backups
 
 function backupData(){
@@ -1117,6 +1274,16 @@ restoreBtn.onclick=()=>{
   i.onchange=e=>e.target.files[0]&&restoreData(e.target.files[0]);
   i.click();
 };
+
+// credits
+
+function openCreditsModal() {
+  document.getElementById('creditsModal').style.display = 'flex';
+}
+
+function closeCreditsModal() {
+  document.getElementById('creditsModal').style.display = 'none';
+}
 
 // init
 
@@ -1180,5 +1347,4 @@ document.getElementById('cloudIdDisplay').textContent = cloudId ? 'Set' : 'Not s
 });
 
 greetUser();
-
 initTheme()
