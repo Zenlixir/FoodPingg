@@ -124,6 +124,13 @@
                         <span class="material-symbols-outlined settings-chevron">chevron_right</span>
                      </div>
                      <div class="settings-divider"></div>
+                     <div class="settings-row" onclick="openFontModal()">
+                        <span class="material-symbols-outlined settings-icon">font_download</span>
+                        <span class="settings-row-label">Font</span>
+                        <span class="settings-row-value" id="fontDisplay">Default</span>
+                        <span class="material-symbols-outlined settings-chevron">chevron_right</span>
+                     </div>
+                     <div class="settings-divider"></div>
                      <div class="settings-row" onclick="openWifiModal()">
                         <span class="material-symbols-outlined settings-icon">wifi</span>
                         <span class="settings-row-label">Device Wi-Fi Setup</span>
@@ -207,6 +214,12 @@
                         <span class="material-symbols-outlined settings-icon">fork_spoon</span>
                         <span class="settings-row-label">FoodPing</span>
                         <span class="settings-row-value">v1.2 (120)</span>
+                     </div>
+                     <div class="settings-divider"></div>
+                     <div class="settings-row" onclick="openCreditsModal()">
+                        <span class="material-symbols-outlined settings-icon">info</span>
+                        <span class="settings-row-label">Credits</span>
+                        <span class="material-symbols-outlined settings-chevron">chevron_right</span>
                      </div>
                      <div class="settings-divider"></div>
                      <div class="settings-row">
@@ -335,7 +348,7 @@
       <div id="themeModal" style="display:none;">
          <div id="themeBackdrop" onclick="closeThemeModal()"></div>
          <div id="themeBox">
-            <div id="themeTitle">Themes</div>
+            <div id="themeTitle">Themes <i class="fa-solid fa-palette"></i></div>
             <div id="themeList">
                <div class="theme-option" onclick="applyTheme('strawberry')" id="theme-strawberry">
                   <i class="fa-solid fa-heart theme-swatch" style="color: rgb(240, 182, 193)"></i>
@@ -400,6 +413,124 @@
             <div id="themeDivider"></div>
             <div id="themeActions">
                <button onclick="closeThemeModal()">Close</button>
+            </div>
+         </div>
+      </div>
+      <div id="fontModal" style="display:none;">
+         <div id="fontBackdrop" onclick="closeFontModal()"></div>
+         <div id="fontBox">
+            <div id="fontTitle">Font <i class="fa-solid fa-font"></i></div>
+            <div id="fontList">
+               <div class="font-option" onclick="applyFont('default')" id="font-default">
+                  <div class="font-main">
+                     <span class="font-preview" style="font-family: 'Google Sans Flex', sans-serif;">Aa</span>
+                     <span class="font-name" style="font-family: 'Google Sans Flex', sans-serif;">Google Sans Flex</span>
+                  </div>
+                  <span class="material-symbols-outlined font-check" id="check-font-default">check</span>
+               </div>
+               <div class="font-divider"></div>
+               <div class="font-option" onclick="applyFont('patrickhand')" id="font-patrickhand">
+                  <div class="font-main">
+                     <span class="font-preview" style="font-family: 'Patrick Hand', cursive;">Aa</span>
+                     <span class="font-name" style="font-family: 'Patrick Hand', cursive;">Patrick Hand</span>
+                  </div>
+                  <span class="material-symbols-outlined font-check" id="check-font-patrickhand">check</span>
+               </div>
+               <div class="font-divider"></div>
+               <div class="font-option" onclick="applyFont('gaegu')" id="font-gaegu">
+                  <div class="font-main">
+                     <span class="font-preview" style="font-family: 'Gaegu', cursive;">Aa</span>
+                     <span class="font-name" style="font-family: 'Gaegu', cursive;">Gaegu</span>
+                  </div>
+                  <span class="material-symbols-outlined font-check" id="check-font-gaegu">check</span>
+               </div>
+               <div class="font-divider"></div>
+               <div class="font-option" onclick="applyFont('monocraft')" id="font-monocraft">
+                  <div class="font-main">
+                     <span class="font-preview" style="font-family: 'Monocraft', monospace;">Aa</span>
+                     <span class="font-name" style="font-family: 'Monocraft', monospace;">Monocraft</span>
+                  </div>
+                  <span class="material-symbols-outlined font-check" id="check-font-monocraft">check</span>
+               </div>
+               <div class="font-divider"></div>
+               <div class="font-option" onclick="applyFont('jetbrains')" id="font-jetbrains">
+                  <div class="font-main">
+                     <span class="font-preview" style="font-family: 'JetBrains Mono', monospace;">Aa</span>
+                     <span class="font-name" style="font-family: 'JetBrains Mono', monospace;">JetBrains Mono</span>
+                  </div>
+                  <span class="material-symbols-outlined font-check" id="check-font-jetbrains">check</span>
+               </div>
+            </div>
+            <div id="fontDivider"></div>
+            <div id="fontActions">
+               <button onclick="closeFontModal()">Close</button>
+            </div>
+         </div>
+      </div>
+      <div id="creditsModal" style="display:none;">
+         <div id="creditsBackdrop" onclick="closeCreditsModal()"></div>
+         <div id="creditsBox">
+            <div id="creditsTitle">Credits <i class="fa-solid fa-book"></i></div>
+            <div id="creditsList">
+               <div class="credits-item" onclick="window.open('https://fontawesome.com', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Font Awesome 7</span>
+                     <span class="credits-sub">by Fonticons | Free License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://fonts.google.com/specimen/Patrick+Hand', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Patrick Hand</span>
+                     <span class="credits-sub">by Google Fonts | OFL License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://fonts.google.com/specimen/Gaegu', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Gaegu</span>
+                     <span class="credits-sub">by Google Fonts | OFL License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://github.com/IdreesInc/Monocraft', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Monocraft</span>
+                     <span class="credits-sub">by IdreesInc | MIT License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://fonts.google.com/specimen/JetBrains+Mono', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">JetBrains Mono</span>
+                     <span class="credits-sub">by JetBrains | OFL License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://fonts.google.com/icons', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Material Symbols</span>
+                     <span class="credits-sub">by Google | Apache 2.0 License</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+               <div class="credits-divider"></div>
+               <div class="credits-item" onclick="window.open('https://fonts.google.com', '_blank')">
+                  <div class="credits-info">
+                     <span class="credits-name">Google Sans Flex</span>
+                     <span class="credits-sub">by Google Fonts</span>
+                  </div>
+                  <span class="material-symbols-outlined credits-link">open_in_new</span>
+               </div>
+            </div>
+            <div id="creditsDivider"></div>
+            <div id="creditsActions">
+               <button onclick="closeCreditsModal()">Close</button>
             </div>
          </div>
       </div>
