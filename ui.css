@@ -740,6 +740,90 @@ i.fa-solid { font-size: 1.375rem; line-height: 1; vertical-align: middle; }
 .font-main { display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; }
 .font-preview { font-size: 1.5rem; width: 2rem; text-align: center; color: var(--md-sys-color-primary); }
 
+#fontSizeSection {
+  margin: 0 1.5rem;
+  background: var(--md-sys-color-surface);
+  border-radius: 1rem;
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#fontSizeHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#fontSizeIcon {
+  font-size: 1.5rem;
+  color: var(--md-sys-color-on-surface);
+  opacity: 0.6;
+}
+
+#fontSizeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+#fontSizeLabel {
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+#fontSizeValue {
+  font-size: 0.75rem;
+  color: var(--md-sys-color-on-surface);
+  opacity: 0.5;
+}
+
+#fontSizeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+#fontSizeSlider::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--md-sys-color-on-primary-container);
+}
+
+#fontSizeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 4px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--md-sys-color-on-primary-container);
+  cursor: pointer;
+  margin-top: -13px;
+  outline: 4px solid var(--md-sys-color-surface);
+}
+
+#fontSizeSlider::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--md-sys-color-primary-container);
+}
+
+#fontSizeSlider::-moz-range-thumb {
+  width: 4px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--md-sys-color-on-primary-container);
+  border: none;
+  outline: 4px solid var(--md-sys-color-surface);
+  cursor: pointer;
+}
+
 #creditsModal {
   position: fixed;
   inset: 0;
