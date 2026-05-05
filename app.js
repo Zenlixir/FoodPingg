@@ -1235,6 +1235,32 @@ function initFont() {
 
 initFont();
 
+const fontSizeSlider = document.getElementById('fontSizeSlider');
+const fontSizeValue = document.getElementById('fontSizeValue');
+
+let fontSizeTimer = null;
+
+function applyFontSize(size) {
+  document.documentElement.style.fontSize = size + 'px';
+}
+
+const savedSize = localStorage.getItem('fontSize') || '16';
+fontSizeSlider.value = savedSize;
+fontSizeValue.textContent = savedSize;
+applyFontSize(savedSize);
+
+fontSizeSlider.addEventListener('input', () => {
+  const size = fontSizeSlider.value;
+  fontSizeValue.textContent = size;
+
+  clearTimeout(fontSizeTimer);
+  fontSizeTimer = setTimeout(() => {
+    applyFontSize(size);
+    localStorage.setItem('fontSize', size);
+    haptic(32);
+  }, 1000);
+});
+
 // backups
 
 function backupData(){
