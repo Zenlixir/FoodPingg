@@ -678,19 +678,97 @@ function greetUser() {
 
   const username = localStorage.getItem('cloud_user');
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : hour < 21 ? 'Good Evening' : 'Good Night';
-  const greetText = username ? `${greeting},<br>${username}!` : `${greeting}!`;
+
+  const greeting =
+    hour < 12 ? 'Good Morning' :
+    hour < 17 ? 'Good Afternoon' :
+    hour < 21 ? 'Good Evening' :
+    'Good Night';
+
+  const greetText = username
+    ? `${greeting},<br>${username}!`
+    : `${greeting}!`;
 
   const fade = (content, delay) => setTimeout(() => {
     h1.style.transition = 'opacity 0.5s ease';
     h1.style.opacity = '0';
-    setTimeout(() => { h1.innerHTML = content; h1.style.opacity = '1'; }, 500);
+    setTimeout(() => {
+      h1.innerHTML = content;
+      h1.style.opacity = '1';
+    }, 500);
   }, delay);
 
   setTimeout(() => {
     fade(greetText, 0);
     setTimeout(() => fade('FoodPing', 2000), 500);
   }, 2000);
+
+  if (navigator.getBattery) {
+    navigator.getBattery().then(battery => {
+      const showYummy = () => {
+        if (!battery.charging) return;
+
+        const original = h1.innerHTML;
+
+        h1.style.transition = 'opacity 0.3s ease';
+        h1.style.opacity = '0';
+        setTimeout(() => {
+          h1.innerHTML = 'Yummy!';
+          h1.style.opacity = '1';
+        }, 300);
+
+        setTimeout(() => {
+          h1.style.opacity = '0';
+          setTimeout(() => {
+            h1.innerHTML = original;
+            h1.style.opacity = '1';
+          }, 300);
+        }, 2000);
+      };
+
+      const swapIcons = (toBolt) => {
+        const icons = document.querySelectorAll('.home-bg .material-symbols-outlined');
+        icons.forEach((icon, i) => {
+          setTimeout(() => {
+            icon.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            icon.style.transform = `rotate(var(--r, 0deg)) rotateY(90deg)`;
+            icon.style.opacity = '0';
+
+            setTimeout(() => {
+              icon.textContent = toBolt ? 'bolt' : icon.dataset.original ?? icon.textContent;
+              if (!icon.dataset.original && toBolt) {
+              }
+              
+              icon.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+              icon.style.transform = `rotate(var(--r, 0deg)) rotateY(0deg)`;
+              icon.style.opacity = '1';
+            }, 300);
+          }, i * 40);
+        });
+      };
+
+      const saveOriginals = () => {
+        document.querySelectorAll('.home-bg .material-symbols-outlined').forEach(icon => {
+          if (!icon.dataset.original) icon.dataset.original = icon.textContent.trim();
+        });
+      };
+
+      const showYummyWithBolt = () => {
+        if (!battery.charging) return;
+        saveOriginals();
+        showYummy();
+        swapIcons(true);
+
+        setTimeout(() => swapIcons(false), 2600); 
+      };
+
+      battery.addEventListener('chargingchange', () => {
+        if (battery.charging) showYummyWithBolt();
+      });
+
+      if (battery.charging) showYummyWithBolt();
+    });
+  }
 }
 
 // themes
