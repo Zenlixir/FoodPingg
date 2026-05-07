@@ -187,6 +187,7 @@ function confirmReset() {
           document.getElementById('hapticToggle').checked = true;
           document.getElementById('notifToggle').checked = true;
           document.getElementById('notifTimeDisplay').textContent = '8:00 AM';
+          localStorage.setItem('notifTime', '8:00 AM');
         }
       }
     ]
@@ -389,13 +390,25 @@ function renderTable() {
       borderRadius: '16px', padding: '8px', cursor: 'pointer', marginBottom: '4px'
     });
     delBtn.onclick = () => {
-      haptic([20, 30, 20]);
-      const foods = getFoods();
-      localStorage.removeItem(`notified_${foods[index].name}_${foods[index].date}`);
-      foods.splice(index, 1);
-      saveFoods(foods);
-      renderTable();
-    };
+  openAlert({
+    title: 'Delete Food',
+    msg: `Remove "${food.name}" from your list?`,
+    buttons: [
+      { label: 'Cancel', subtle: true },
+      {
+        label: 'Delete', bold: true,
+        action: () => {
+          haptic([20, 30, 20]);
+          const foods = getFoods();
+          localStorage.removeItem(`notified_${foods[index].name}_${foods[index].date}`);
+          foods.splice(index, 1);
+          saveFoods(foods);
+          renderTable();
+        }
+      }
+    ]
+  });
+};
     btnCell.appendChild(delBtn);
   });
 }
@@ -403,13 +416,24 @@ function renderTable() {
 function deleteAllExpired() {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
-  const foods = getFoods();
-  foods.filter(f => parseDate(f.date) < now).forEach(f => {
-    localStorage.removeItem(`notified_${f.name}_${f.date}`);
+  const expired = getFoods().filter(f => parseDate(f.date) < now);
+  if (!expired.length) { showAlert('No expired items to remove.'); return; }
+  openAlert({
+    title: 'Delete Expired',
+    msg: `Remove ${expired.length} expired item${expired.length > 1 ? 's' : ''}?`,
+    buttons: [
+      { label: 'Cancel', subtle: true },
+      {
+        label: 'Delete', bold: true,
+        action: () => {
+          haptic([20, 30, 20]);
+          expired.forEach(f => localStorage.removeItem(`notified_${f.name}_${f.date}`));
+          saveFoods(getFoods().filter(f => parseDate(f.date) >= now));
+          renderTable();
+        }
+      }
+    ]
   });
-  haptic([20, 30, 20]);
-  saveFoods(foods.filter(f => parseDate(f.date) >= now));
-  renderTable();
 }
 
 // if else ahh ai
@@ -630,11 +654,12 @@ function initDevsEasterEgg() {
   if (!el) return;
   let toggled = false;
   Object.assign(el.style, { fontSize: '15px', color: 'var(--md-sys-color-on-surface)', opacity: '0.5', transition: 'opacity 0.3s' });
-  el.addEventListener('click', () => {
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
     el.style.opacity = 0;
     setTimeout(() => {
       toggled = !toggled;
-      el.textContent = toggled ? 'Z.' : 'Izatifoodie';
+      el.textContent = toggled ? 'Zenlixir' : 'Izatifoodie';
       el.style.opacity = 0.5;
     }, 300);
   });
@@ -1102,7 +1127,7 @@ async function openFontModal() {
     list.style.cssText = 'opacity:0.4;pointer-events:none;transition:opacity 0.3s ease;';
     const spinner = document.createElement('div');
     spinner.id = 'fontLoadingSpinner';
-    spinner.style.cssText = 'position:absolute;bottom:5rem;left:50%;transform:translateX(-50%);font-size:0.75rem;color:var(--md-sys-color-on-surface);opacity:0.5;font-family:"Google Sans Flex",sans-serif!important;white-space:nowrap;';
+    spinner.style.cssText = 'position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:0.75rem;color:var(--md-sys-color-on-surface);opacity:0.5;font-family:"Google Sans Flex",sans-serif!important;white-space:nowrap;';
     spinner.textContent = 'Loading fonts...';
     document.getElementById('fontBox').appendChild(spinner);
 
@@ -1145,7 +1170,7 @@ fontSizeSlider.addEventListener('input', () => {
     document.documentElement.style.fontSize = size + 'px';
     localStorage.setItem('fontSize', size);
     haptic(32);
-  }, 1000);
+  }, 500);
 });
 
 // backups
@@ -1156,9 +1181,12 @@ function backupData() {
     const k = localStorage.key(i);
     o[k] = localStorage.getItem(k);
   }
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const stamp = `${pad(now.getDate())}${pad(now.getMonth()+1)}${String(now.getFullYear()).slice(-2)}${pad(now.getHours())}${pad(now.getMinutes())}`;
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify({ v: 1, data: o })], { type: 'application/octet-stream' }));
-  a.download = 'foodping.foodping-backup';
+  a.download = `Foodping_${stamp}.foodping-backup`;
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -1177,24 +1205,64 @@ function restoreData(f) {
   r.readAsText(f);
 }
 
-backupBtn.onclick = backupData;
+document.getElementById('backupBtn').onclick = () => {
+  openAlert({
+    title: 'Backup Data',
+    msg: 'This will download all your data as a backup file.',
+    buttons: [
+      { label: 'Cancel', subtle: true },
+      { label: 'Backup', bold: true, action: backupData }
+    ]
+  });
+};
 
-restoreBtn.onclick = () => {
-  const i = document.createElement('input');
-  i.type = 'file';
-  i.accept = '.foodping-backup';
-  i.onchange = e => e.target.files[0] && restoreData(e.target.files[0]);
-  i.click();
+document.getElementById('restoreBtn').onclick = () => {
+  openAlert({
+    title: 'Restore Data',
+    msg: 'This will replace all current data with the backup. This cannot be undone.',
+    buttons: [
+      { label: 'Cancel', subtle: true },
+      {
+        label: 'Restore', bold: true,
+        action: () => {
+          const i = document.createElement('input');
+          i.type = 'file';
+          i.accept = '.foodping-backup';
+          i.onchange = e => {
+            const f = e.target.files[0];
+            if (!f) return;
+            if (!f.name.endsWith('.foodping-backup')) {
+              openAlert({ title: 'Wrong File', msg: 'Please select a valid .foodping-backup file.', buttons: [{ label: 'OK' }] });
+              return;
+            }
+            restoreData(f);
+          };
+          i.click();
+        }
+      }
+    ]
+  });
 };
 
 // credits
 
 function openCreditsModal() {
-  openModal({ modalId: 'creditsModal', boxId: 'creditsBox', backdropId: 'creditsBackdrop', useHaptic: false });
+  openModal({ modalId: 'creditsModal', boxId: 'creditsBox', backdropId: 'creditsBackdrop', hapticMs: 32 });
 }
 
 function closeCreditsModal() {
   closeModal({ modalId: 'creditsModal', boxId: 'creditsBox', backdropId: 'creditsBackdrop' });
+}
+
+function openLinkAlert(name, url) {
+  openAlert({
+    title: 'Open Link?',
+    msg: `Visit ${name}'s GitHub profile?`,
+    buttons: [
+      { label: 'Cancel', subtle: true },
+      { label: 'Open', bold: true, action: () => window.open(url, '_blank') }
+    ]
+  });
 }
 
 // init
@@ -1248,5 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('cloudIdDisplay').textContent = cloudId ? 'Set' : 'Not set';
 });
 
+document.getElementById('rowDev').addEventListener('click', () => openLinkAlert('Izatifoodie', 'https://github.com/Izatifoodie'));
+document.getElementById('rowDesigner').addEventListener('click', () => openLinkAlert('Zenlixir', 'https://github.com/Zenlixir'));
 greetUser();
 initTheme();
