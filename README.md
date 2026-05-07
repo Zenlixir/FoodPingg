@@ -41,7 +41,7 @@
 - Cloud ID linking for external sync
 - Progressive Web App (installable on mobile)
 - Offline support via service worker
-- Material Design 3 inspired UI
+- Md3 expressive inspired
 - etc.
 
 <div align="center">
