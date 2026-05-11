@@ -168,25 +168,6 @@
                   </div>
                </div>
                <div class="settings-group">
-                  <div class="settings-group-label">NEURAL LEARNING</div>
-                  <div class="settings-card">
-                     <div class="settings-row">
-                        <span class="material-icons-round settings-icon">auto_awesome</span>
-                        <span class="settings-row-label">Smart Suggestions</span>
-                        <label class="switch">
-                        <input type="checkbox" id="neuralLearning">
-                        <span class="switch-track"></span>
-                        </label>
-                     </div>
-                     <div class="settings-divider"></div>
-                     <div class="settings-row" onclick="openResetLearningModal()">
-                        <span class="material-symbols-outlined settings-icon">delete_forever</span>
-                        <span class="settings-row-label settings-row-danger">Forget everything</span>
-                        <span class="material-symbols-outlined settings-chevron">chevron_right</span>
-                     </div>
-                  </div>
-               </div>
-               <div class="settings-group">
                   <div class="settings-group-label">DATA MANAGEMENT</div>
                   <div class="settings-card">
                      <div class="settings-row" id="backupBtn">
@@ -205,6 +186,34 @@
                         <span class="material-symbols-outlined settings-icon">delete_forever</span>
                         <span class="settings-row-label settings-row-danger">Reset All Data</span>
                         <span class="material-symbols-outlined settings-chevron">error</span>
+                     </div>
+                  </div>
+               </div>
+               <div class="settings-group">
+                  <div class="settings-group-label">EXPERIMENTAL</div>
+                  <div class="settings-card">
+                     <div class="settings-row">
+                        <span class="material-icons-round settings-icon">rss_feed</span>
+                        <span class="settings-row-label">Feed Page</span>
+                        <label class="switch">
+                        <input type="checkbox" id="feeds">
+                        <span class="switch-track"></span>
+                        </label>
+                     </div>
+                     <div class="settings-divider"></div>
+                     <div class="settings-row">
+                        <span class="material-icons-round settings-icon">auto_awesome</span>
+                        <span class="settings-row-label">Smart Suggestions</span>
+                        <label class="switch">
+                        <input type="checkbox" id="neuralLearning">
+                        <span class="switch-track"></span>
+                        </label>
+                     </div>
+                     <div class="settings-divider"></div>
+                     <div class="settings-row" onclick="openResetLearningModal()">
+                        <span class="material-symbols-outlined settings-icon">delete_forever</span>
+                        <span class="settings-row-label settings-row-danger">Forget everything</span>
+                        <span class="material-symbols-outlined settings-chevron">chevron_right</span>
                      </div>
                   </div>
                </div>
@@ -238,6 +247,18 @@
                </div>
             </div>
          </main>
+         <main class="page" id="feedpage">
+            <div class="feed-topbar">
+               <h1 style="margin:0;padding:0;flex:1">Food Feed</h1>
+               <button id="feedRefreshBtn" onclick="loadFeed(true)">
+               <span class="material-symbols-outlined">refresh</span>
+               </button>
+            </div>
+            <div class="feed-page-content">
+               <div id="feedList"></div>
+            </div>
+            <div id="feedDetail"></div>
+         </main>
          <main class="page" id="about">
             <h1>About</h1>
             <div class="page-content">
@@ -263,6 +284,10 @@
          <button class="nav-item" data-page="logs">
          <span class="material-symbols-outlined">list</span>
          <span class="nav-label">Food List</span>
+         </button>
+         <button class="nav-item" data-page="feedpage" id="feedNavBtn" style="display:none">
+         <span class="material-symbols-outlined">rss_feed</span>
+         <span class="nav-label">Feed</span>
          </button>
          <button class="nav-item" data-page="settings">
          <span class="material-symbols-outlined">settings</span>
