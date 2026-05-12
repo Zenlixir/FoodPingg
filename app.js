@@ -1528,7 +1528,7 @@ const RSS_FEEDS = [
 
 async function fetchRssFeed(feedInfo) {
   const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedInfo.url)}&api_key=&count=10`;
-  const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
+  const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000), cache: 'no-store'  });
   if (!res.ok) throw new Error('bad status');
   const json = await res.json();
   if (json.status !== 'ok' || !json.items?.length) throw new Error('empty');
