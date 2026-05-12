@@ -1526,11 +1526,12 @@ function renderPosts(posts) {
 }
 
 const RSS_FEEDS = [
-  { url: 'https://www.reddit.com/r/MinecraftFoodMemes/.rss', source: 'Minecraft Food Memes' },
+  { url: 'https://blog.myfitnesspal.com/feed/', source: 'MyFitnessPal' },
   { url: 'https://www.eatingwell.com/feed/', source: 'EatingWell' },
   { url: 'https://nutritionfacts.org/feed/', source: 'NutritionFacts' },
   { url: 'https://dontwastethecrumbs.com/feed/', source: 'Don\'t Waste the Crumbs' },
   { url: 'https://www.skinnytaste.com/feed/', source: 'Skinnytaste' },
+  { url: 'https://zerowastechef.com/feed/', source: 'Zero-Waste Chef' },
 ];
 
 async function fetchRssFeed(feedInfo) {
@@ -1687,6 +1688,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById('rowDev').addEventListener('click', () => openLinkAlert('Izatifoodie', 'https://github.com/Izatifoodie'));
 document.getElementById('rowDesigner').addEventListener('click', () => openLinkAlert('Zenlixir', 'https://github.com/Zenlixir'));
-
 greetUser();
 initTheme();
