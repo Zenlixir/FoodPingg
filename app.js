@@ -1465,7 +1465,7 @@ function openFeedDetail(post) {
       <span class="feed-detail-bar-title">Post</span>
     </div>
     <div class="feed-detail-body">
-      ${post.imgUrl ? `<div class="feed-detail-img"><img src="${post.imgUrl}" alt="" onerror="this.parentElement.remove()"></div>` : ''}
+      ${post.imgUrl ? `<div class="feed-detail-img"><img src="${post.imgUrl}" alt="" onclick="openImageViewer('${post.imgUrl}')" onerror="this.parentElement.remove()" style="cursor:zoom-in"></div>` : ''}
       <div class="feed-detail-meta">
         <span class="feed-tag">${post.source}</span>
         <span class="feed-time">${post.author || ''}</span>
@@ -1483,11 +1483,87 @@ function openFeedDetail(post) {
   `;
 
   detail.classList.add('open');
+  history.pushState({ feedDetail: true }, '');
 }
 
 function closeFeedDetail() {
   haptic(22);
   document.getElementById('feedDetail').classList.remove('open');
+  if (history.state?.feedDetail) {
+    history.back();
+  }
+}
+
+window.addEventListener('popstate', () => {
+  if (document.getElementById('imgViewer')) return;
+  if (document.getElementById('feedDetail').classList.contains('open')) {
+    closeFeedDetail();
+  }
+});
+
+function openImageViewer(src) {
+  const existing = document.getElementById('imgViewer');
+  if (existing) existing.remove();
+
+  const viewer = document.createElement('div');
+  viewer.id = 'imgViewer';
+  viewer.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0);
+    transition: background 0.32s cubic-bezier(.4,0,.2,1);
+    cursor: zoom-out;
+  `;
+
+  const img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = `
+    max-width: 92vw;
+    max-height: 88vh;
+    border-radius: 14px;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.38);
+    opacity: 0;
+    transform: scale(0.82);
+    transition: opacity 0.32s cubic-bezier(.4,0,.2,1), transform 0.32s cubic-bezier(.4,0,.2,1), border-radius 0.32s cubic-bezier(.4,0,.2,1);
+    will-change: transform, opacity;
+    cursor: zoom-out;
+    user-select: none;
+    -webkit-user-select: none;
+  `;
+
+  viewer.appendChild(img);
+  document.body.appendChild(viewer);
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      viewer.style.background = '#000';
+      img.style.opacity = '1';
+      img.style.transform = 'scale(1)';
+    });
+  });
+
+  function animateOut() {
+    viewer.style.background = 'rgba(0,0,0,0)';
+    img.style.opacity = '0';
+    img.style.transform = 'scale(0.82)';
+    img.style.borderRadius = '28px';
+    setTimeout(() => viewer.remove(), 340);
+    haptic(22);
+  }
+
+  viewer.addEventListener('click', () => history.back());
+  img.addEventListener('click', e => { e.stopPropagation(); history.back(); });
+
+  history.pushState({ imgViewer: true }, '');
+
+  window.addEventListener('popstate', function handler() {
+    animateOut();
+    window.removeEventListener('popstate', handler);
+  });
 }
 
 function showFeedSkeleton() {
